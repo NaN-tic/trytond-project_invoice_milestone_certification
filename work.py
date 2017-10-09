@@ -11,13 +11,15 @@ class Certification:
 
     @classmethod
     def confirm(cls, certifications):
-        pool = Pool()
-        Milestone = pool.get('project.invoice_milestone')
+        Milestone = Pool().get('project.invoice_milestone')
+
         super(Certification, cls).confirm(certifications)
+
         milestones = []
         for cert in certifications:
             for x in cert.lines:
                 for y in x.work.milestones:
                     milestones.append(y)
             milestones += cert.work.milestones
-        Milestone.check_trigger(milestones)
+        if milestones:
+            Milestone.check_trigger(milestones)
